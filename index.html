@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Clínica Nácar</title>
+<meta name="description" content="Clínica Nácar — odontología general y estética. Pedí tu turno online.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
+<style>
+  /* Layout: una sola pantalla útil — titular a la izquierda, formulario de turno a la derecha; abajo, datos prácticos y pie. */
+  :root {
+    --bg: #F4F7F6;
+    --surface: #FFFFFF;
+    --ink: #12282B;
+    --muted: #5A6D6F;
+    --line: #DAE2E1;
+    --soft: #E7EFED;
+    --accent: #1E6C65;
+    --accent-ink: #FFFFFF;
+    --error: #B0412E;
+
+    --display: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+
+    --radius: 14px;
+    --wrap: 1120px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1617; --surface: #132022; --ink: #E6EEED; --muted: #93A6A7;
+      --line: #243639; --soft: #182A2C; --accent: #6FC3B7; --accent-ink: #0D1617; --error: #F08A73;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1617; --surface: #132022; --ink: #E6EEED; --muted: #93A6A7;
+    --line: #243639; --soft: #182A2C; --accent: #6FC3B7; --accent-ink: #0D1617; --error: #F08A73;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.6 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
+    padding-right: max(24px, env(safe-area-inset-right, 0px));
+  }
+  @media (max-width: 480px) {
+    .wrap {
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  /* Encabezado */
+  header .wrap {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding-block: 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .brand svg { width: 26px; height: 26px; flex: none; }
+  .brand span { font: 400 1.35rem/1 var(--display); letter-spacing: 0.01em; }
+  .header-link {
+    font-size: 0.875rem; font-weight: 500; color: var(--muted); text-decoration: none;
+  }
+  .header-link:hover { color: var(--ink); }
+
+  /* Hero + formulario */
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(32px, 6vw, 88px);
+    align-items: center;
+    padding-block: clamp(24px, 6vw, 72px) clamp(48px, 8vw, 96px);
+  }
+  .eyebrow {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 20px;
+  }
+  h1 {
+    font: 300 clamp(2.8rem, 6.4vw, 5.2rem)/1.02 var(--display);
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; position: relative; white-space: nowrap; }
+  h1 .smile {
+    position: absolute; left: 2%; right: 4%; bottom: -0.16em; height: 0.28em;
+    width: 94%; overflow: visible;
+  }
+  h1 .smile path { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .lede {
+    font-size: 1.125rem; color: var(--muted); max-width: 30em; margin: 32px 0 0;
+  }
+  .facts {
+    list-style: none; padding: 0; margin: 40px 0 0;
+    display: flex; flex-wrap: wrap; gap: 12px 28px;
+    font-size: 0.9rem; color: var(--muted);
+  }
+  .facts li { display: flex; align-items: center; gap: 8px; }
+  .facts li::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(24px, 3.5vw, 36px);
+    box-shadow: 0 1px 2px rgb(18 40 43 / 0.04), 0 18px 40px -24px rgb(18 40 43 / 0.18);
+    min-width: 0;
+  }
+  .card h2 { font: 400 1.6rem/1.2 var(--display); margin: 0; }
+  .card .sub { color: var(--muted); font-size: 0.9rem; margin: 6px 0 24px; }
+
+  form { display: grid; gap: 18px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field { display: grid; gap: 6px; min-width: 0; }
+  label, .legend { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+  input, select {
+    width: 100%; min-width: 0;
+    font: inherit; font-size: 0.95rem; color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 13px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input::placeholder { color: var(--muted); opacity: .7; }
+  input:focus, select:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .field.invalid input, .field.invalid select { border-color: var(--error); }
+  .err { font-size: 0.78rem; color: var(--error); min-height: 0; }
+  .err:empty { display: none; }
+
+  fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+  .slots { display: flex; gap: 8px; flex-wrap: wrap; }
+  .slot input { position: absolute; opacity: 0; pointer-events: none; }
+  .slot span {
+    display: inline-block; padding: 9px 16px; border-radius: 999px;
+    border: 1px solid var(--line); font-size: 0.875rem; cursor: pointer;
+    background: var(--bg); color: var(--ink);
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .slot input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .slot input:focus-visible + span { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+
+  .btn {
+    appearance: none; border: 0; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font: 600 1rem/1 var(--body);
+    background: var(--accent); color: var(--accent-ink);
+    padding: 15px 22px; border-radius: 10px; text-decoration: none;
+    transition: filter .15s, transform .15s;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .fine { font-size: 0.78rem; color: var(--muted); margin: 0; text-align: center; }
+
+  /* Confirmación */
+  .done { display: grid; gap: 18px; }
+  .done .check {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--soft);
+    display: grid; place-items: center; color: var(--accent);
+  }
+  .summary {
+    margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 18px;
+    padding: 16px 18px; background: var(--bg); border-radius: 10px; font-size: 0.9rem;
+  }
+  .summary dt { color: var(--muted); }
+  .summary dd { margin: 0; font-weight: 500; min-width: 0; overflow-wrap: anywhere; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .actions .btn { flex: 1 1 180px; }
+
+  /* Fondo suave detrás del formulario */
+  .hero { position: relative; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; z-index: 0; pointer-events: none;
+    width: 720px; height: 720px; right: -220px; top: -160px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, var(--soft), transparent 68%);
+  }
+  .hero .wrap { position: relative; z-index: 1; }
+
+  /* Cómo funciona: tres pasos reales, en orden */
+  .steps .wrap {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px;
+    padding-block: 0 64px;
+  }
+  .step { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: baseline; }
+  .step b {
+    grid-row: span 2; font: 300 2.2rem/1 var(--display); color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .step strong { font-weight: 600; font-size: 0.98rem; }
+  .step p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+  /* Botón fijo en celular */
+  .mobile-cta { display: none; }
+  @media (max-width: 860px) {
+    .mobile-cta {
+      display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+      padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(8px); border-top: 1px solid var(--line);
+      transition: transform .2s;
+    }
+    .mobile-cta .btn { width: 100%; }
+    .mobile-cta.away { transform: translateY(110%); }
+    footer .wrap { padding-bottom: 96px; }
+    .steps .wrap { grid-template-columns: 1fr; gap: 20px; padding-block: 0 40px; }
+  }
+
+  /* Datos prácticos */
+  .info { border-top: 1px solid var(--line); }
+  .info .wrap {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px;
+    padding-block: 48px;
+  }
+  .info h3 {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 10px;
+  }
+  .info p { margin: 0; font-size: 0.95rem; }
+  .info .tab { font-variant-numeric: tabular-nums; }
+
+  footer .wrap {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+    padding-block: 24px 36px; font-size: 0.8rem; color: var(--muted);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .info .wrap { grid-template-columns: 1fr; gap: 24px; padding-block: 36px; }
+  }
+  @media (max-width: 420px) {
+    .row { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Clínica Nácar, inicio">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M8.5 17.5c2 4 4.6 5.8 7.5 5.8s5.5-1.8 7.5-5.8" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span>Nácar</span>
+    </a>
+    <a class="header-link" href="#turno">Pedir turno →</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Odontología general y estética</p>
+        <h1>Algo en tu cara me <em>fascina.<svg class="smile" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 2 Q50 12 98 2"/></svg></em></h1>
+        <p class="lede">Es tu sonrisa. La cuidamos con tiempo, explicaciones claras y turnos que se respetan. Dejanos tus datos y te confirmamos el horario en el día.</p>
+        <ul class="facts">
+          <li>Primera consulta de 40 min</li>
+          <li>Odontograma completo</li>
+          <li>Obras sociales y prepagas</li>
+        </ul>
+      </div>
+
+      <div class="card" id="turno">
+        <div id="formView">
+          <h2>Reservá tu turno</h2>
+          <p class="sub">Te respondemos por WhatsApp en menos de 24 h hábiles.</p>
+          <form id="bookingForm" novalidate>
+            <div class="field">
+              <label for="nombre">Nombre y apellido</label>
+              <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="Ej.: Laura Gómez" required>
+              <span class="err" id="nombre-err"></span>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="telefono">Teléfono</label>
+                <input id="telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="351 555 1234" required>
+                <span class="err" id="telefono-err"></span>
+              </div>
+              <div class="field">
+                <label for="motivo">Motivo</label>
+                <select id="motivo" name="motivo" required>
+                  <option value="">Elegí una opción</option>
+                  <option>Control y limpieza</option>
+                  <option>Dolor o urgencia</option>
+                  <option>Blanqueamiento / estética</option>
+                  <option>Ortodoncia</option>
+                  <option>Implantes</option>
+                  <option>Otro</option>
+                </select>
+                <span class="err" id="motivo-err"></span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="fecha">Día preferido</label>
+              <input id="fecha" name="fecha" type="date" required>
+              <span class="err" id="fecha-err"></span>
+            </div>
+            <fieldset>
+              <legend class="legend">Franja horaria</legend>
+              <div class="slots">
+                <label class="slot"><input type="radio" id="franja-m" name="franja" value="Mañana (9 a 13 h)" checked><span>Mañana</span></label>
+                <label class="slot"><input type="radio" id="franja-t" name="franja" value="Tarde (14 a 20 h)"><span>Tarde</span></label>
+                <label class="slot"><input type="radio" id="franja-i" name="franja" value="Indistinto"><span>Indistinto</span></label>
+              </div>
+            </fieldset>
+            <button class="btn" type="submit">Solicitar turno</button>
+            <p class="fine">Atendemos de lunes a viernes de 9 a 20 h y sábados de 9 a 13 h.</p>
+          </form>
+        </div>
+
+        <div id="doneView" class="done" hidden>
+          <div class="check" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          </div>
+          <div>
+            <h2>Falta un paso</h2>
+            <p class="sub" style="margin-bottom:0">Enviá tu solicitud por WhatsApp para que la recepción la reciba y te confirme el horario.</p>
+          </div>
+          <dl class="summary" id="summary"></dl>
+          <div class="actions">
+            <a class="btn" id="waLink" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+            <button class="btn ghost" type="button" id="editBtn">Modificar datos</button>
+          </div>
+          <p class="fine">¿No se abre WhatsApp? Escribinos al <strong id="waNumber"></strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps" aria-label="Cómo pedir turno">
+    <div class="wrap">
+      <div class="step"><b>1</b><strong>Completás el formulario</strong><p>Te lleva menos de un minuto.</p></div>
+      <div class="step"><b>2</b><strong>Te confirmamos por WhatsApp</strong><p>Recepción te ofrece el horario más cercano a tu pedido.</p></div>
+      <div class="step"><b>3</b><strong>Venís a la consulta</strong><p>Revisión completa, odontograma y plan de tratamiento por escrito.</p></div>
+    </div>
+  </section>
+
+  <section class="info" aria-label="Información de la clínica">
+    <div class="wrap">
+      <div>
+        <h3>Dónde estamos</h3>
+        <p>Av. Rafael Núñez 4520, 1.º piso<br>Cerro de las Rosas, Córdoba</p>
+      </div>
+      <div>
+        <h3>Horarios</h3>
+        <p class="tab">Lun a Vie · 9:00 – 20:00<br>Sábados · 9:00 – 13:00</p>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <p class="tab">WhatsApp +54 9 351 555-0100<br>turnos@clinicanacar.com.ar</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Clínica Nácar · Dir. odontológica: Od. Valentina Ríos, M.P. 4821</span>
+    <span>Sitio de práctica: la clínica y sus datos son ficticios.</span>
+  </div>
+</footer>
+
+<div class="mobile-cta" id="mobileCta">
+  <a class="btn" href="#turno">Pedir turno</a>
+</div>
+
+<script>
+  // Número de WhatsApp de la recepción, en formato internacional sin "+" ni espacios.
+  const CLINIC_WA = "5493515550100";
+  const CLINIC_WA_LABEL = "+54 9 351 555-0100";
+
+  const form = document.getElementById("bookingForm");
+  const formView = document.getElementById("formView");
+  const doneView = document.getElementById("doneView");
+  const fecha = document.getElementById("fecha");
+
+  const pad = n => String(n).padStart(2, "0");
+  const toISO = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = new Date();
+  fecha.min = toISO(today);
+  const max = new Date(today); max.setDate(max.getDate() + 90);
+  fecha.max = toISO(max);
+
+  document.getElementById("waNumber").textContent = CLINIC_WA_LABEL;
+
+  function setError(id, msg) {
+    document.getElementById(id + "-err").textContent = msg;
+    document.getElementById(id).closest(".field").classList.toggle("invalid", !!msg);
+  }
+
+  function parseDate(value) {
+    const [y, m, d] = value.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function validate() {
+    let ok = true;
+    const nombre = form.nombre.value.trim();
+    const tel = form.telefono.value.replace(/[^\d]/g, "");
+    const motivo = form.motivo.value;
+    const f = form.fecha.value;
+
+    setError("nombre", nombre.length < 3 ? "Escribí tu nombre y apellido." : "");
+    setError("telefono", tel.length < 8 ? "Ingresá un teléfono con código de área." : "");
+    setError("motivo", !motivo ? "Elegí el motivo de la consulta." : "");
+
+    let fechaMsg = "";
+    if (!f) fechaMsg = "Elegí un día.";
+    else {
+      const d = parseDate(f);
+      if (f < fecha.min) fechaMsg = "Elegí un día a partir de hoy.";
+      else if (f > fecha.max) fechaMsg = "Tomamos turnos hasta 90 días adelante.";
+      else if (d.getDay() === 0) fechaMsg = "Los domingos no atendemos. Elegí otro día.";
+    }
+    setError("fecha", fechaMsg);
+
+    ok = !document.querySelector(".field.invalid");
+    return ok;
+  }
+
+  ["nombre", "telefono", "motivo", "fecha"].forEach(id => {
+    form[id].addEventListener("change", () => {
+      if (form[id].closest(".field").classList.contains("invalid")) validate();
+    });
+  });
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!validate()) {
+      const first = document.querySelector(".field.invalid input, .field.invalid select");
+      if (first) first.focus();
+      return;
+    }
+
+    const fechaTxt = parseDate(form.fecha.value).toLocaleDateString("es-AR", {
+      weekday: "long", day: "numeric", month: "long"
+    });
+    const data = [
+      ["Nombre", form.nombre.value.trim()],
+      ["Teléfono", form.telefono.value.trim()],
+      ["Motivo", form.motivo.value],
+      ["Día", fechaTxt.charAt(0).toUpperCase() + fechaTxt.slice(1)],
+      ["Franja", form.franja.value]
+    ];
+
+    const summary = document.getElementById("summary");
+    summary.replaceChildren();
+    data.forEach(([k, v]) => {
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.textContent = v;
+      summary.append(dt, dd);
+    });
+
+    const msg = "Hola, quiero pedir un turno en Clínica Nácar.\n" +
+      data.map(([k, v]) => `${k}: ${v}`).join("\n");
+    document.getElementById("waLink").href =
+      `https://wa.me/${CLINIC_WA}?text=${encodeURIComponent(msg)}`;
+
+    formView.hidden = true;
+    doneView.hidden = false;
+    document.getElementById("waLink").focus();
+  });
+
+  // Oculta el botón fijo de celular mientras el formulario está a la vista.
+  const mobileCta = document.getElementById("mobileCta");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([entry]) => {
+      mobileCta.classList.toggle("away", entry.isIntersecting);
+    }, { threshold: 0.2 }).observe(document.getElementById("turno"));
+  }
+
+  document.getElementById("editBtn").addEventListener("click", () => {
+    doneView.hidden = true;
+    formView.hidden = false;
+    form.nombre.focus();
+  });
+</script>
+</body>
+</html>
